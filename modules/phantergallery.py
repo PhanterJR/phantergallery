@@ -111,16 +111,22 @@ class PhanterGalleryInput(object):
         title_button = self._title_button
         image_button = self._image_button
         ids_elements = {
-            '_data-upload-area': 'phantergallery_upload-area',
+            '_data-object': 'phantergallery_object',
             '_data-upload-form-container':
                 'phantergallery_upload-form-container',
             '_data-upload-input': 'phantergallery_upload-input-file',
             '_data-upload-area-panel-cutter':
-                'phantergallery-upload-area-panel-cutter',
+                'phantergallery_upload-area-panel-cutter',
             '_data-upload-area-target-view':
-                'phantergallery-upload-area-target-view',
+                'phantergallery_upload-area-target-view',
+            '_data-upload-messages':
+                'phantergallery_upload-messages',
             '_data-upload-area-progress':
-                'phantergallery-upload-area-progress',
+                'phantergallery_upload-area-progress',
+            '_data-upload-image-button':
+                'phantergallery_upload-image-button',
+            '_data-upload-title-button':
+                'phantergallery_upload-title-button',            
         }
         if _id:
             for x in ids_elements:
@@ -131,15 +137,17 @@ class PhanterGalleryInput(object):
                 DIV(
                     DIV(
                         DIV(image_button,
+                            _id=ids_elements["_data-upload-image-button"],
                             _class="phantergallery_upload-image-button"),
                         DIV(title_button,
+                            _id=ids_elements["_data-upload-title-button"],
                             _class="phantergallery_upload-title-button"),
                         _class="phantergallery_upload-button"
                     ),
                     _class="phantergallery_container-upload-button"
                 ),
-                _id=ids_elements['_data-upload-area'],
-                _class="phantergallery_container-upload_area",
+                _id=ids_elements['_data-object'],
+                _class="phantergallery_object",
                 **ids_elements
             ),
             DIV(
@@ -147,6 +155,7 @@ class PhanterGalleryInput(object):
                     _accept="image/png, image/jpeg, image/gif, image/bmp",
                     _id=ids_elements["_data-upload-input"],
                     _class="phantergallery_upload-input-file",
+                    _type="file",
                 ),
                 _id=ids_elements["_data-upload-form-container"],
                 _class="phantergallery_upload-form-container",
@@ -154,6 +163,7 @@ class PhanterGalleryInput(object):
             ),
             DIV(_id=ids_elements['_data-upload-area-panel-cutter']),
             DIV(_id=ids_elements['_data-upload-area-target-view']),
+            DIV(_id=ids_elements['_data-upload-messages']),
             DIV(
                 DIV(
                     DIV(

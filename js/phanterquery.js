@@ -47,6 +47,7 @@ var phanterQuery=function(seletor){
 			};
 			seletor=transform
 		}
+		console.log(seletor)
 		result = document.querySelectorAll(seletor)
 		if(result.length!=0){
 			elements = result		
@@ -66,7 +67,8 @@ var phanterQuery=function(seletor){
 			for (var i = 0; i < this.length; i++) {
 				var el=this[0][i];
 				var comands={
-					click: function(){console.log(el); console.log(callback); el.onclick = callback},
+					click: function(){el.onclick = callback},
+					change: function(){el.onchange = callback},
 				};
 				comands[comand](el, callback);
 			};
@@ -97,6 +99,16 @@ var phanterQuery=function(seletor){
 				el.innerHTML = html
 			};				
 			return this
+		},
+		trigger: function(comand){
+			for (var i = 0; i < this.length; i++) {
+				var el=this[0][i];
+				var comands={
+					click: function(){el.click();},
+				};
+				comands[comand]();
+			};
+			return this	
 		}
 	}
 	return obj_result
