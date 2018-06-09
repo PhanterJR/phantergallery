@@ -47,7 +47,7 @@ var phanterQuery=function(seletor){
 			};
 			seletor=transform
 		}
-		console.log(seletor)
+		//console.log(seletor)
 		result = document.querySelectorAll(seletor)
 		if(result.length!=0){
 			elements = result		
@@ -69,6 +69,10 @@ var phanterQuery=function(seletor){
 				var comands={
 					click: function(){el.onclick = callback},
 					change: function(){el.onchange = callback},
+					mousedown: function(){el.onmousedown = callback},
+					mouseup: function(){el.onmouseup = callback},
+					mousemove: function(){el.onmousemove = callback},
+					mouseleave: function(){el.onmouseleave = callback},
 				};
 				comands[comand](el, callback);
 			};

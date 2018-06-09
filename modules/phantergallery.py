@@ -110,15 +110,24 @@ class PhanterGalleryInput(object):
     def _html_input(self, _id=""):
         title_button = self._title_button
         image_button = self._image_button
+        cut_size = self.cut_size
         ids_elements = {
             '_data-object': 'phantergallery_object',
             '_data-upload-form-container':
                 'phantergallery_upload-form-container',
             '_data-upload-input': 'phantergallery_upload-input-file',
-            '_data-upload-area-panel-cutter':
-                'phantergallery_upload-area-panel-cutter',
-            '_data-upload-area-target-view':
-                'phantergallery_upload-area-target-view',
+            '_data-cutter-pad':
+                'phantergallery_cutter-pad',
+            '_data-cutter-background':
+                'phantergallery_cutter-background',
+            '_data-panel-cutter-container':
+                'phantergallery_panel-cutter-container',
+            '_data-panel-cutter-size-container':
+                'phantergallery_panel-cutter-size-container',
+            '_data-panel-cutter-image':
+                'phantergallery_panel-cutter-image',
+            '_data-target-view':
+                'phantergallery_target-view',
             '_data-upload-messages':
                 'phantergallery_upload-messages',
             '_data-upload-area-progress':
@@ -126,12 +135,13 @@ class PhanterGalleryInput(object):
             '_data-upload-image-button':
                 'phantergallery_upload-image-button',
             '_data-upload-title-button':
-                'phantergallery_upload-title-button',            
+                'phantergallery_upload-title-button',
         }
         if _id:
             for x in ids_elements:
                 ids_elements[x] = "-".join([ids_elements[x], _id])
-
+        ids_elements['_data-cutter-size-x'] = str(cut_size[0])
+        ids_elements['_data-cutter-size-y'] = str(cut_size[1])
         html = DIV(
             DIV(
                 DIV(
@@ -161,8 +171,32 @@ class PhanterGalleryInput(object):
                 _class="phantergallery_upload-form-container",
                 _style="display: none;"
             ),
-            DIV(_id=ids_elements['_data-upload-area-panel-cutter']),
-            DIV(_id=ids_elements['_data-upload-area-target-view']),
+            DIV(
+                DIV(_id=ids_elements["_data-cutter-background"],
+                    _class="phantergallery_cutter-background"),
+                DIV(_class="phantergallery_cutter-shadow"),
+                DIV(
+                    DIV(
+                        DIV(
+                            _class="phantergallery_panel-cutter-image",
+                            _id=ids_elements['_data-panel-cutter-image']),
+
+                        _style="overflow: hidden; width: %spx; height: %spx;" %
+                               (cut_size[0], cut_size[1]),
+                        _id=ids_elements['_data-panel-cutter-size-container'],
+                        _class="phantergallery_panel-cutter-size-container"
+                    ),
+                    _class="phantergallery_panel-cutter"
+                ),
+                DIV(_id=ids_elements['_data-cutter-pad'],
+                    _class="phantergallery_cutter-pad"),
+                _id=ids_elements['_data-panel-cutter-container'],
+                _class="phantergallery_panel-cutter-container"
+            ),
+            DIV(
+                DIV(_id=ids_elements['_data-target-view']),
+                _class='phantergallery_target-view-container'
+            ),
             DIV(_id=ids_elements['_data-upload-messages']),
             DIV(
                 DIV(
