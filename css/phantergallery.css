@@ -1,3 +1,6 @@
+*, ::after, ::before {
+    box-sizing: border-box;
+}
 .phantergallery_container-main {
     width: 100%;
 }
@@ -11,6 +14,11 @@
     border-radius: 12px;
     text-transform: uppercase;
     cursor: pointer;
+    min-height: 103px;
+}
+.phantergallery_upload-image-button .phantersvg.upload-cloud {
+    font-size: 50px;
+    color: red;
 }
 .phantergallery_panel-cutter-container {
 	display: none;
@@ -19,6 +27,7 @@
     left: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 .phantergallery_panel-cutter-container.actived {
 	display: block;
@@ -40,6 +49,14 @@
 		top:0px;
 	}
 }
+.phantergallery_panel-cutter-container.close {
+    display: block;
+    position: fixed;
+    top: 0;
+    height: 0;
+    transition: height 1s cubic-bezier(1,.04,.38,.82);
+}
+
 .phantergallery_cutter-background {
     position: absolute;
     width: 100%;
@@ -54,15 +71,79 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.7);
 }
 .phantergallery_panel-cutter{
 	position: absolute;
     width: 100%;
     height: 100%;
 }
+.phantergallery_cutter-zoom-container {
+    background-color: rgba(255, 252, 252, 0.8);
+    width: 100%;
+    height: 50px;
+    position: absolute;
+    bottom: 0;
+}
+.phantergallery_cutter-zoom-controls {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50px;
+    padding: 10px 36px 10px 36px;
+    position: relative;
+}
+.phantersvg.increase-image {
+    position: absolute;
+    right: 0;
+    font-size: 30px;
+    top: 10px;
+}
+.phantersvg.decrease-image {
+    position: absolute;
+    left: 0;
+    font-size: 30px;
+    top: 10px;
+}
+.phantergallery_cutter-zoom-control-container {
+    width: 100%;
+    height: 30px;
+    background: grey;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+.phantergallery_cutter-zoom-control {
+    width: 50px;
+    height: 30px;
+    background-color: black;
+    border-radius: 30px;
+    left: 89px;
+    position: absolute;
+}
+.phantergallery_cutter-control .phantersvg {
+    font-size: 40px;
+    cursor: pointer;
+}
+.phantergallery_cutter-control .phantersvg:hover {
+    fill:orange;
+}
+.phantergallery_cutter-control.actived {
+    fill: red;
+}
+.phantergallery_cutter-shadow.actived {
+    background-color: black;
+}
+.phantergallery_cutter-controls-container {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+}
 .phantergallery_panel-cutter-size-container{
 	position: absolute;
+    box-shadow: 0px 0px 5px #b0b0b0, 0px 0px 10px #323232;
 }
 .phantergallery_panel-cutter-image{
 	position: absolute;
@@ -150,3 +231,8 @@
   100% {
     left: 107%;
     right: -8%; } }
+.phantergallery_upload-messages {
+    text-transform: uppercase;
+    text-align: center;
+    color: red;
+}

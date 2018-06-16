@@ -1,4 +1,4 @@
-var phanterQuery=function(seletor){
+var phanterQuery = function(seletor){
 	var cm_car=['.', '\\', '#', '*', ',', '>', '+', '~', '[', ']', '=', '|', '^', '"', '$', ':', '(', ')'];
 	
 	var isID = seletor.startsWith("#");

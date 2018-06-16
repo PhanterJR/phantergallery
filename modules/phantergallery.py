@@ -2,11 +2,9 @@
 # Autor: PhanerJR
 from __future__ import print_function
 from modules.phantertagconstroi import MyTag
-# import os
-# from PIL import Image as PilImage
-# from io import StringIO
-# import base64
-# import json
+import io
+import os
+from PIL import Image as PILImage
 
 
 class DIV(MyTag):
@@ -50,8 +48,9 @@ class PhanterGalleryInput(object):
         super(PhanterGalleryInput, self).__init__()
         self.cut_size = cut_size
         self.title_button = "Upload Image"
-        self._image_button = I(_class="phantersvg upload")
+        self._image_button = I(_class="phantersvg upload-cloud")
         self._global_id = ""
+        self._url = url
 
     @property
     def global_id(self):
@@ -122,10 +121,20 @@ class PhanterGalleryInput(object):
                 'phantergallery_cutter-background',
             '_data-panel-cutter-container':
                 'phantergallery_panel-cutter-container',
+            '_data-cutter-shadow':
+                'phantergallery_cutter-shadow',
+            '_data-cutter-control-close':
+                'phantergallery_cutter-control-close',
+            '_data-cutter-control-view':
+                'phantergallery_cutter-control-view',
+            '_data-cutter-control-cut':
+                'phantergallery_cutter-control-cut',
             '_data-panel-cutter-size-container':
                 'phantergallery_panel-cutter-size-container',
             '_data-panel-cutter-image':
                 'phantergallery_panel-cutter-image',
+            '_data-cutter-zoom-control':
+                'phantergallery_cutter-zoom-control',
             '_data-target-view':
                 'phantergallery_target-view',
             '_data-upload-messages':
@@ -142,6 +151,7 @@ class PhanterGalleryInput(object):
                 ids_elements[x] = "-".join([ids_elements[x], _id])
         ids_elements['_data-cutter-size-x'] = str(cut_size[0])
         ids_elements['_data-cutter-size-y'] = str(cut_size[1])
+        ids_elements['_data-upload-url'] = self._url
         html = DIV(
             DIV(
                 DIV(
@@ -174,7 +184,8 @@ class PhanterGalleryInput(object):
             DIV(
                 DIV(_id=ids_elements["_data-cutter-background"],
                     _class="phantergallery_cutter-background"),
-                DIV(_class="phantergallery_cutter-shadow"),
+                DIV(_id=ids_elements["_data-cutter-shadow"],
+                    _class="phantergallery_cutter-shadow"),
                 DIV(
                     DIV(
                         DIV(
@@ -188,8 +199,35 @@ class PhanterGalleryInput(object):
                     ),
                     _class="phantergallery_panel-cutter"
                 ),
-                DIV(_id=ids_elements['_data-cutter-pad'],
+                DIV(
+                    _id=ids_elements['_data-cutter-pad'],
                     _class="phantergallery_cutter-pad"),
+                DIV(
+                    DIV(
+                        I(_class="phantersvg close-circule"),
+                        _id=ids_elements['_data-cutter-control-close'],
+                        _class="phantergallery_cutter-control"),
+                    DIV(
+                        I(_class="phantersvg view-image"),
+                        _id=ids_elements['_data-cutter-control-view'],
+                        _class="phantergallery_cutter-control"),
+                    DIV(
+                        I(_class="phantersvg cut-image"),
+                        _id=ids_elements['_data-cutter-control-cut'],
+                        _class="phantergallery_cutter-control"),
+                    _class='phantergallery_cutter-controls-container'),
+                DIV(
+                    DIV(
+                        I(_class="phantersvg decrease-image"),
+                        DIV(
+                            DIV(_id=ids_elements['_data-cutter-zoom-control'],
+                                _class="phantergallery_cutter-zoom-control"),
+                            _class="phantergallery_cutter-zoom-control" +
+                                   "-container"
+                        ),
+                        I(_class="phantersvg increase-image"),
+                        _class='phantergallery_cutter-zoom-controls'),
+                    _class='phantergallery_cutter-zoom-container'),
                 _id=ids_elements['_data-panel-cutter-container'],
                 _class="phantergallery_panel-cutter-container"
             ),
@@ -197,7 +235,8 @@ class PhanterGalleryInput(object):
                 DIV(_id=ids_elements['_data-target-view']),
                 _class='phantergallery_target-view-container'
             ),
-            DIV(_id=ids_elements['_data-upload-messages']),
+            DIV(_id=ids_elements['_data-upload-messages'],
+                _class="phantergallery_upload-messages"),
             DIV(
                 DIV(
                     DIV(
@@ -238,8 +277,47 @@ class PhanterGalleryInput(object):
         return self.xml
 
 
-if __name__ == '__main__':
+class PhanterGalleryCutter(object):
+    def __init__(self,
+                 imageName,
+                 imageType,
+                 imageBytes,
+                 cutterSizeX, cutterSizeY,
+                 positionX, positionY,
+                 newSizeX, newSizeY):
+        self.imageName = imageName
+        self.imageType = imageType
+        self.imageBytes = imageBytes
+        self.cutterSizeX = cutterSizeX
+        self.cutterSizeY = cutterSizeY
+        self.positionX = positionX
+        self.positionY = positionY
+        self.newSizeX = newSizeX
+        self.newSizeY = newSizeY
 
-    test = PhanterGalleryInput('/')
-    test.global_id = "testef"
-    print(test)
+    def echoPhanterImages(self):
+        imageBytes = self.imageBytes
+        nome_da_imagem = self.imageName
+        im = PILImage.open(imageBytes)
+        newSizeX = int(float(self.newSizeX))
+        newSizeY = int(float(self.newSizeY))
+        cutterSizeX = float(self.cutterSizeX)
+        cutterSizeY = float(self.cutterSizeY)
+        positionX = float(self.positionX) * (-1)
+        positionY = float(self.positionY) * (-1)
+        extensao = os.path.splitext(nome_da_imagem)[1]
+        im = im.resize((newSizeX, newSizeY),
+                       PILImage.ANTIALIAS)
+        im = im.crop((positionX, positionY,
+                      positionX + cutterSizeX,
+                      positionY + cutterSizeY))
+        jpeg_image_buffer = io.BytesIO()
+        if extensao.lower() == '.png':
+            # im.save(jpeg_image_buffer, 'png')
+            im.save(jpeg_image_buffer, 'png')
+        else:
+            # im.save(jpeg_image_buffer, format='JPEG', quality=100)
+            im.save(jpeg_image_buffer, format='JPEG', quality=100)
+        jpeg_image_buffer.seek(0)
+        data = jpeg_image_buffer.read()
+        return data
