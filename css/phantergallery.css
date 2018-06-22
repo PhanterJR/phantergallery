@@ -150,7 +150,7 @@
     font-size: 40px;
     cursor: pointer;
 }
-.phantergallery_cutter-control .phantersvg:hover {
+.phantergallery_cutter-control .phantersvg:hover .phantersvg-ico-layer0{
     fill:orange;
 }
 .phantergallery_cutter-control.actived {
@@ -288,7 +288,10 @@
 .phantergallery_imagecuted-control i {
     font-size: 18pt;
 }
-.phantergallery_imagecuted-control:hover svg{
+.phantergallery_imagecuted-control:hover{
+    cursor: pointer;    
+}
+.phantergallery_imagecuted-control:hover .phantersvg-ico-layer0{
     fill:orange;
-    cursor: pointer;
+
 }
