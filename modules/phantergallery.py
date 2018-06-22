@@ -197,7 +197,7 @@ class PhanterGalleryInput(object):
                                    "_imagecuted-control"
                         ),
                         DIV(
-                            I(_class="phantersvg reload-image"),
+                            I(_class="phantersvg image-reload"),
                             _id=ids_elements["_data-imagecuted" +
                                              "-control-change"],
                             _class="phantergallery" +
@@ -266,28 +266,28 @@ class PhanterGalleryInput(object):
                     _class="phantergallery_cutter-pad"),
                 DIV(
                     DIV(
-                        I(_class="phantersvg close-circule"),
+                        I(_class="phantersvg close-circle"),
                         _id=ids_elements['_data-cutter-control-close'],
                         _class="phantergallery_cutter-control"),
                     DIV(
-                        I(_class="phantersvg view-image"),
+                        I(_class="phantersvg image-view"),
                         _id=ids_elements['_data-cutter-control-view'],
                         _class="phantergallery_cutter-control"),
                     DIV(
-                        I(_class="phantersvg cut-image"),
+                        I(_class="phantersvg image-cut"),
                         _id=ids_elements['_data-cutter-control-cut'],
                         _class="phantergallery_cutter-control"),
                     _class='phantergallery_cutter-controls-container'),
                 DIV(
                     DIV(
-                        I(_class="phantersvg decrease-image"),
+                        I(_class="phantersvg image-decrease"),
                         DIV(
                             DIV(_id=ids_elements['_data-cutter-zoom-control'],
                                 _class="phantergallery_cutter-zoom-control"),
                             _class="phantergallery_cutter-zoom-control" +
                                    "-container"
                         ),
-                        I(_class="phantersvg increase-image"),
+                        I(_class="phantersvg image-increase"),
                         _class='phantergallery_cutter-zoom-controls'),
                     _class='phantergallery_cutter-zoom-container'),
                 _id=ids_elements['_data-panel-cutter-container'],
