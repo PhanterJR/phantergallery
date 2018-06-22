@@ -4,6 +4,22 @@
 .phantergallery_container-main {
     width: 100%;
 }
+@keyframes fadeInFromNone {
+    0% {
+        display: none;
+        opacity: 0;
+    }
+
+    1% {
+        display: block;
+        opacity: 0;
+    }
+
+    100% {
+        display: block;
+        opacity: 1;
+    }
+}
 .phantergallery_object {
     width: 170px;
     margin-left: auto;
@@ -15,7 +31,16 @@
     text-transform: uppercase;
     cursor: pointer;
     min-height: 103px;
+    display: none;
+    opacity:0;
+    animation: fadeInFromNone 0.5s;
 }
+.phantergallery_object.actived{
+    display: block;
+    opacity:1;
+    transition: opacity 0.5s;
+}
+
 .phantergallery_upload-image-button .phantersvg.upload-cloud {
     font-size: 50px;
     color: red;
@@ -235,4 +260,35 @@
     text-transform: uppercase;
     text-align: center;
     color: red;
+}
+.phantergallery_target-view-container {
+    display: none;
+    box-shadow: 1px 1px 8px grey;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    background-color: black;
+    opacity: 0;
+    animation: fadeInFromNone;
+}
+.phantergallery_target-view-container.actived {
+    display: block;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+.phantergallery_imagecuted-controls {
+
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.71);
+    top: 5px;
+    right: 5px;
+    padding: 5px;
+
+}
+.phantergallery_imagecuted-control i {
+    font-size: 18pt;
+}
+.phantergallery_imagecuted-control:hover svg{
+    fill:orange;
+    cursor: pointer;
 }

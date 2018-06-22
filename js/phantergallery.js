@@ -1,378 +1,391 @@
 
 var phanterGalleryObj = function(elementPhanterGalleryObj, config, messages){
-    var el = elementPhanterGalleryObj
-    var obj = {
-        el:el,
-        imageName: "",
-        imageType: "",
-        uploadArea: phanterQuery("#"+el.dataset["object"]),
-        uploadFormContainer: phanterQuery("#"+el.dataset["uploadFormContainer"]),
-        uploadInput: phanterQuery("#"+el.dataset["uploadInput"]),
-        panelCutterContainer: phanterQuery("#"+el.dataset["panelCutterContainer"]),
-        cutterShadow: phanterQuery("#"+el.dataset["cutterShadow"]),
-        cutterControlClose: phanterQuery("#"+el.dataset["cutterControlClose"]),
-        cutterControlView: phanterQuery("#"+el.dataset["cutterControlView"]),
-        cutterControlCut: phanterQuery("#"+el.dataset["cutterControlCut"]),
-        cutterPad: phanterQuery("#"+el.dataset["cutterPad"]),
-        cutterBackground: phanterQuery("#"+el.dataset["cutterBackground"]),
-        cutterZoomControl: phanterQuery("#"+el.dataset["cutterZoomControl"]),
-        panelCutterSizeContainer: phanterQuery("#"+el.dataset["panelCutterSizeContainer"]),
-        panelCutterImage: phanterQuery("#"+el.dataset["panelCutterImage"]),
-        targetView: phanterQuery("#"+el.dataset["targetView"]),
-        uploadMessages: phanterQuery("#"+el.dataset["uploadMessages"]),
-        uploadAreaProgress: phanterQuery("#"+el.dataset["uploadAreaProgress"]),
-        uploadImageButton: phanterQuery("#"+el.dataset["uploadImageButton"]),
-        uploadTitleButton: phanterQuery("#"+el.dataset["uploadTitleButton"]),
-        cutterSizeX: el.dataset["cutterSizeX"],
-        cutterSizeY: el.dataset["cutterSizeY"],
-        uploadUrl: el.dataset["uploadUrl"],
-        config: config,
-        messages:messages,
-        phanterGalleryCutterObj: undefined,
-        error:false,
-        showProgress: function(){
-            var MainObj = this
-            MainObj.uploadAreaProgress.addClass("actived");
-            return MainObj
-        },
-        hideProgress: function(){
-            var MainObj = this
-            MainObj.uploadAreaProgress.removeClass("actived");
-            return MainObj
-        },
-        showMessage: function(message){
-            var MainObj = this
-            MainObj.uploadMessages.html(message);
-            MainObj.uploadMessages.addClass("actived");
-            return MainObj
-        },
-        hideMessage: function(){
-            var MainObj = this
-            MainObj.uploadMessages.html("");
-            MainObj.uploadMessages.removeClass("actived");
-            return MainObj
-        },
-        click: function(){
-            var MainObj = this
-            MainObj.setTitleButton(MainObj.config.titleButtonWaiting)
-            MainObj.uploadInput.trigger('click')
-            return MainObj
-        },
-        setImgButton:function(img){
-            var MainObj = this
-            MainObj.uploadImageButton.html(img);
-            return MainObj
-        },
-        setTitleButton: function(title){
-            var MainObj = this
-            MainObj.uploadTitleButton.html(title);
-            return MainObj
-        },
-        inputChange: function(){
-            var MainObj = this
-            MainObj.showProgress();
-            var blob = MainObj.uploadInput[0][0].files;
-            console.log(blob)
-            MainObj.imageBlob = blob[0]
+    var MainObj = this
+    MainObj.el = elementPhanterGalleryObj;
+    MainObj.imageName = "";
+    MainObj.imageType = "";
+    MainObj.uploadArea = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-object"));
+    MainObj.uploadFormContainer = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-upload-form-container"));
+    MainObj.uploadInput = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-upload-input"));
+    MainObj.panelCutterContainer = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-panel-cutter-container"));
+    MainObj.cutterShadow = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-cutter-shadow"));
+    MainObj.cutterControlClose = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-cutter-control-close"));
+    MainObj.cutterControlView = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-cutter-control-view"));
+    MainObj.cutterControlCut = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-cutter-control-cut"));
+    MainObj.cutterPad = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-cutter-pad"));
+    MainObj.cutterBackground = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-cutter-background"));
+    MainObj.cutterZoomControl = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-cutter-zoom-control"));
+    MainObj.panelCutterSizeContainer = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-panel-cutter-size-container"));
+    MainObj.panelCutterImage = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-panel-cutter-image"));
+    MainObj.targetView = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-target-view"));
+    MainObj.targetViewContainer = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-target-view-container"));
+    MainObj.imagecutedControlErase = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-imagecuted-control-erase"));
+    MainObj.imagecutedControlChange = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-imagecuted-control-change"));
+    MainObj.uploadMessages = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-upload-messages"));
+    MainObj.uploadAreaProgress = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-upload-area-progress"));
+    MainObj.uploadImageButton = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-upload-image-button"));
+    MainObj.uploadTitleButton = phanterQuery("#"+elementPhanterGalleryObj.getAttribute("data-upload-title-button"));
+    MainObj.cutterSizeX = elementPhanterGalleryObj.getAttribute("data-cutter-size-x");
+    MainObj.cutterSizeY = elementPhanterGalleryObj.getAttribute("data-cutter-size-y");
+    MainObj.uploadSrcImg = elementPhanterGalleryObj.getAttribute("data-upload-src-img");
+    MainObj.config = config;
+    MainObj.messages = messages;
+    MainObj.phanterGalleryCutterObj = undefined;
+    MainObj.error = false;
+    MainObj._callAfterCut = "";
+    MainObj.showProgress = function(){
+        MainObj.uploadAreaProgress.addClass("actived");
+        return MainObj
+    };
+    MainObj.hideProgress = function(){
+        MainObj.uploadAreaProgress.removeClass("actived");
+        return MainObj
+    };
+    MainObj.showMessage = function(message){
+        MainObj.uploadMessages.html(message);
+        MainObj.uploadMessages.addClass("actived");
+        return MainObj
+    };
+    MainObj.hideMessage = function(){
+        MainObj.uploadMessages.html("");
+        MainObj.uploadMessages.removeClass("actived");
+        return MainObj
+    };
+    MainObj.click = function(){
+        MainObj.setTitleButton(MainObj.config.titleButtonWaiting)
+        MainObj.uploadInput.trigger('click')
+        return MainObj
+    };
+    MainObj.setImgButton = function(img){
+        MainObj.uploadImageButton.html(img);
+        return MainObj
+    };
+    MainObj.setTitleButton = function(title){
+        MainObj.uploadTitleButton.html(title);
+        return MainObj
+    };
+    MainObj.inputChange = function(){
+        MainObj.showProgress();
+        var blob = MainObj.uploadInput[0][0].files;
+        MainObj.imageBlob = blob[0]
+        var fileslength = blob.length;
+        for (var i = fileslength - 1; i >= 0; i--) {
+            var img_type = blob[i]['type'];
+            var img_name= blob[i]['name'];
+            MainObj.imageName = img_name;
+            MainObj.imageType = img_type;
+            if (img_type=="image/png"||img_type=="image/bmp"||img_type=="image/gif"||img_type=="image/jpeg"){
+                if(img_name.length<50){
+                    var reader = new FileReader();
 
-            var fileslength = blob.length;
-            for (var i = fileslength - 1; i >= 0; i--) {
-                var img_type = blob[i]['type'];
-                var img_name= blob[i]['name'];
-                MainObj.imageName = img_name;
-                MainObj.imageType = img_type;
-                if (img_type=="image/png"||img_type=="image/bmp"||img_type=="image/gif"||img_type=="image/jpeg"){
-                    if(img_name.length<50){
-                        var reader = new FileReader();
-                        reader.readAsDataURL(blob[0])
-                        MainObj.targetView.html("")
-                        MainObj.hideProgress()
-                        reader.onloadend = function(){
-                            var base64data = reader.result;
-                            MainObj.phanterGalleryCutterObj= new phanterGalleryCutterObj(base64data, MainObj)
-                            window.onresize = function(event){
-                            }
+                    reader.readAsDataURL(blob[0])
+                    MainObj.targetView.html("")
+                    MainObj.hideProgress()
+                    reader.onloadend = function(){
+                        var base64data = reader.result;
+                        MainObj.phanterGalleryCutterObj= new phanterGalleryCutterObj(base64data, MainObj)
+                        window.onresize = function(event){
                         }
-                    } else {
-                        var message = MainObj.messages.nameOfFileLong
-                        MainObj.showMessage(message);
-                    };
-                } else{
-                    var message = MainObj.messages.FileCouldNotBeUploaded.replace("%(name_file)s", img_name);
-                    throw message
+                    }
+                } else {
+                    var message = MainObj.messages.nameOfFileLong
                     MainObj.showMessage(message);
-                }
+                };
+            } else{
+                var message = MainObj.messages.FileCouldNotBeUploaded.replace("%(name_file)s", img_name);
+                throw message
+                MainObj.showMessage(message);
             }
-            //console.log(this.uploadInput)
-            return MainObj
-        },
-
+        }
+        return MainObj
     };
-    obj.el=elementPhanterGalleryObj
-    obj.uploadInput.on('change', function(){
-        obj.inputChange();
+    MainObj.el=elementPhanterGalleryObj
+    MainObj.uploadInput.on('change', function(){
+        MainObj.inputChange();
     });
-    obj.el.onclick = function(){
-        obj.hideProgress();
-        obj.hideMessage();
-        obj.click();
+    MainObj.el.onclick = function(){
+        MainObj.hideProgress();
+        MainObj.hideMessage();
+        MainObj.click();
     };
-
-    return obj
+    return MainObj
 }
-var phanterGalleryCutterObj = function(base64data, MainObj){
-    var MainObj=MainObj
+var phanterGalleryCutterObj = function(base64data, PG){
+    var selfObj = this
+    var PG=PG
     var base64data=base64data
     var img1=document.createElement("IMG");
     var img2=document.createElement("IMG");
-    img1.src=base64data
-    img2.src=base64data
     img1.onerror = function(){
-        MainObj.error=true;
+        PG.error=true;
         throw "invalid image!"
     }
-    MainObj.panelCutterImage.html("");
-    MainObj.cutterBackground.html("");
-    MainObj.panelCutterImage[0][0].appendChild(img1)
-    MainObj.cutterBackground[0][0].appendChild(img2)
-    var obj = {
-        base64data:base64data,
-        widthImg:0,
-        heightImg:0,
-        widthScreen:0,
-        heightScreen:0,
-        widthCutter:0,
-        heightCutter:0,
-        inicialPositionXBackground:0,
-        inicialPositionYBackground:0,
-        inicialPositionXImgToCut:0,
-        inicialPositionYImgToCut:0, 
-        deslocationPositionXBackground:0,
-        deslocationPositionYBackground:0,
-        deslocationPositionXImgToCut:0,
-        deslocationPositionYImgToCut:0,
-        deslocationPositionZoom:0,
-        positionDefaultZoom:89.0,
-        widthImgAfterZoom:0,
-        heightImgAfterZoom:0,
-        positionXAfterZoom:0,
-        positionYAfterZoom:0,
-        activeViewImage:false,
-        calcMidPosition:function(sizeContainer, sizeContent, positionContent){
-            var midsize1=sizeContainer/2.0
-            var midsize2=sizeContent/2.0
-            var relativeposition=midsize1-midsize2
-            var finalPosition=relativeposition-positionContent
-            return finalPosition
-        },
-        moveImage:function(x,y){
-            var slaveObj=this;
-            slaveObj.deslocationPositionXBackground=x*(-1)
-            slaveObj.deslocationPositionYBackground=y*(-1)
-            slaveObj.deslocationPositionXImgToCut=x*(-1)
-            slaveObj.deslocationPositionYImgToCut=y*(-1)
-            slaveObj.calcPosition()
-        },
-        viewImage:function(){
-            var slaveObj=this;
-            if (slaveObj.activeViewImage){
-                slaveObj.activeViewImage=false
-                MainObj.cutterControlView.removeClass("actived")
-                MainObj.cutterShadow.removeClass("actived")
-            } else{
-                slaveObj.activeViewImage=true
-                MainObj.cutterControlView.addClass("actived")
-                MainObj.cutterShadow.addClass("actived")
-            };
-        },
-        closeImage: function(){
-            var slaveObj=this;
-            MainObj.panelCutterContainer.removeClass("actived")
-            MainObj.setTitleButton(MainObj.config.titleButton)
-            MainObj.panelCutterContainer.addClass("close")
-        },
-        cutImage: function(){
-            var slaveObj=this;
-            var url = MainObj.uploadUrl
-            var xhttp;
-            xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    callback(this);
-                } else{
-                    console.log(this)
+    PG.panelCutterImage.html("");
+    PG.cutterBackground.html("");
+    PG.panelCutterImage[0][0].appendChild(img1)
+    PG.cutterBackground[0][0].appendChild(img2)
+    selfObj.base64data = base64data;
+    selfObj.originalWidthImg = 0;
+    selfObj.originalHeightImg = 0;
+    selfObj.widthImg = 0;
+    selfObj.heightImg = 0;
+    selfObj.widthScreen = 0;
+    selfObj.heightScreen = 0;
+    selfObj.widthCutter = 0;
+    selfObj.heightCutter = 0;
+    selfObj.inicialPositionXBackground = 0;
+    selfObj.inicialPositionYBackground = 0;
+    selfObj.inicialPositionXImgToCut = 0;
+    selfObj.inicialPositionYImgToCut = 0;
+    selfObj.deslocationPositionXBackground = 0;
+    selfObj.deslocationPositionYBackground = 0;
+    selfObj.deslocationPositionXImgToCut = 0;
+    selfObj.deslocationPositionYImgToCut = 0;
+    selfObj.deslocationPositionZoom = 0;
+    selfObj.positionDefaultZoom = 89.0;
+    selfObj.widthImgAfterZoom = 0;
+    selfObj.heightImgAfterZoom = 0;
+    selfObj.positionXAfterZoom = 0;
+    selfObj.positionYAfterZoom = 0;
+    selfObj.activeViewImage = false;
+    selfObj.calcMidPosition =function(sizeContainer, sizeContent, positionContent){
+        var midsize1=sizeContainer/2.0
+        var midsize2=sizeContent/2.0
+        var relativeposition=midsize1-midsize2
+        var finalPosition=relativeposition-positionContent
+        return finalPosition
+    };
+    selfObj.moveImage =function(x,y){
+        selfObj.deslocationPositionXBackground=x*(-1)
+        selfObj.deslocationPositionYBackground=y*(-1)
+        selfObj.deslocationPositionXImgToCut=x*(-1)
+        selfObj.deslocationPositionYImgToCut=y*(-1)
+        selfObj.calcPosition()
+    };
+    selfObj.viewImage =function(){
+        if (selfObj.activeViewImage){
+            selfObj.activeViewImage=false
+            PG.cutterControlView.removeClass("actived")
+            PG.cutterShadow.removeClass("actived")
+        } else{
+            selfObj.activeViewImage=true
+            PG.cutterControlView.addClass("actived")
+            PG.cutterShadow.addClass("actived")
+        };
+    };
+    selfObj.closeImage = function(){
+        PG.panelCutterContainer.removeClass("actived")
+        PG.setTitleButton(PG.config.titleButton)
+        PG.panelCutterContainer.addClass("close")
+    };
+    selfObj.cutImage = function(){
+        var canvas = PG.targetView[0][0]
+        canvas.width = selfObj.widthCutter
+        canvas.height = selfObj.heightCutter
+        var ctx = canvas.getContext('2d');
+        var ratio = selfObj.originalWidthImg/parseFloat(selfObj.widthImgAfterZoom)
+        var positionX = selfObj.positionXAfterZoom * (-1) * ratio
+        var positionY = selfObj.positionYAfterZoom * (-1) * ratio
+        var wX = PG.cutterSizeX * ratio
+        var wY = PG.cutterSizeY * ratio
+        PG.uploadArea.removeClass("actived")
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img1, positionX, positionY, wX, wY, 0, 0, selfObj.widthCutter, selfObj.widthCutter)
+        if (PG._callAfterCut){
+            var imageCutObj={
+                originalImage:{
+                    imageName:PG.imageName,
+                    imageType:PG.imageType,
+                    imageBytes:PG.imageBlob,
+                    imagemBase64Data:selfObj.base64data,
+                    cutterSizeX:PG.cutterSizeX, 
+                    cutterSizeY:PG.cutterSizeY,
+                    positionX:selfObj.positionXAfterZoom,
+                    positionY:selfObj.positionYAfterZoom,
+                    newSizeX:selfObj.widthImgAfterZoom,
+                    newSizeY:selfObj.heightImgAfterZoom, 
+                },
+                cuttedImage:{
+                    imageName:PG.imageName,
+                    imageType:PG.imageType,
+                    imageBase64Data:canvas.toDataURL(),
+                    imageBytes:"",
                 }
-            };
-            var fd = new FormData();
-            fd.append("imageBytes", MainObj.imageBlob);
-            fd.append("imageName", MainObj.imageName);
-            fd.append("imageType", MainObj.imageType);
-            fd.append("cutterSizeX", MainObj.cutterSizeX);
-            fd.append("cutterSizeY", MainObj.cutterSizeY);
-            fd.append("positionX", slaveObj.positionXAfterZoom);
-            fd.append("positionY", slaveObj.positionYAfterZoom);
-            fd.append("newSizeX", slaveObj.widthImgAfterZoom);
-            fd.append("newSizeY", slaveObj.heightImgAfterZoom);
-            xhttp.open("POST", url, true);
-            xhttp.send(fd,  MainObj.imageBlob);
-        },
-        movecutterZoom:function(x, zoominicial, width, height){
-            var slaveObj=this;
-            slaveObj.deslocationPositionZoom=x*(-1)
-            slaveObj.calcZoomPosition(zoominicial, width, height)
-        },
-        changeSizeImage:function(ratio, width, height){
-            var slaveObj=this;
-            width = parseFloat(width)*ratio
-            height =  parseFloat(height)*ratio
-            img1.style.width=width+"px"
-            img1.style.height=height+"px"
-            img2.style.width=width+"px"
-            img2.style.height=height+"px"
-            slaveObj.widthImg=width
-            slaveObj.heightImg=height
-            slaveObj.widthImgAfterZoom=width
-            slaveObj.heightImgAfterZoom=height
-            slaveObj.calcPosition();
-        },
-        calcZoomPosition:function(zoominicial, width, height){
-            var slaveObj=this;
-            var position = slaveObj.positionDefaultZoom-slaveObj.deslocationPositionZoom
-            var ratio=position/zoominicial
-            slaveObj.changeSizeImage(ratio, width, height)
-            MainObj.cutterZoomControl[0][0].style.left=position+"px"
-        },
-        calcPosition:function(){
-            var slaveObj=this;
-            var widthImg=slaveObj.widthImg;
-            var heightImg=slaveObj.heightImg;
-            console.log("x:"+widthImg+" y:"+heightImg)
-            var widthScreen=window.innerWidth;
-            var heightScreen=window.innerHeight
-            var widthCutter=slaveObj.widthCutter;
-            var heightCutter=slaveObj.heightCutter;
-            if(widthImg>0&&heightImg>0&&widthScreen>0&&heightScreen>0){
-                let f=slaveObj.calcMidPosition
-                let iPXB = slaveObj.inicialPositionXBackground+slaveObj.deslocationPositionXBackground
-                let iPYB = slaveObj.inicialPositionYBackground+slaveObj.deslocationPositionYBackground
-                let iPXITC = slaveObj.inicialPositionXImgToCut+slaveObj.deslocationPositionXImgToCut
-                let iPYITC = slaveObj.inicialPositionYImgToCut+slaveObj.deslocationPositionYImgToCut
-                var relativePositionXBackground=f(widthScreen, widthImg, iPXB);
-                var relativePositionYBackground=f(heightScreen, heightImg, iPYB);
-                var relativePositionXImgToCut=f(widthCutter, widthImg, iPXITC);
-                var relativePositionYImgToCut=f(heightCutter, heightImg, iPYITC);
-                MainObj.panelCutterSizeContainer[0][0].style.left=f(widthScreen, widthCutter, 0)+"px";
-                MainObj.panelCutterSizeContainer[0][0].style.top=f(heightScreen, heightCutter, 0)+"px";
-                MainObj.cutterBackground[0][0].style.left=relativePositionXBackground+"px"
-                MainObj.cutterBackground[0][0].style.top=relativePositionYBackground+"px"
-                MainObj.panelCutterImage[0][0].style.left=relativePositionXImgToCut+"px"
-                MainObj.panelCutterImage[0][0].style.top=relativePositionYImgToCut+"px"
-                slaveObj.positionXAfterZoom=relativePositionXImgToCut
-                slaveObj.positionYAfterZoom=relativePositionYImgToCut
-            };
-        },
-        saveinicialPosition:function(){
-            var slaveObj=this;
-            slaveObj.inicialPositionXBackground+=slaveObj.deslocationPositionXBackground
-            slaveObj.inicialPositionYBackground+=slaveObj.deslocationPositionYBackground
-            slaveObj.inicialPositionXImgToCut+=slaveObj.deslocationPositionXImgToCut
-            slaveObj.inicialPositionYImgToCut+=slaveObj.deslocationPositionYImgToCut
-            slaveObj.deslocationPositionXBackground=0
-            slaveObj.deslocationPositionYBackground=0
-            slaveObj.deslocationPositionXImgToCut=0
-            slaveObj.deslocationPositionYImgToCut=0
-        },
-        savePositionZoom: function(){
-            var slaveObj=this;
-            slaveObj.positionDefaultZoom-=slaveObj.deslocationPositionZoom
-            slaveObj.deslocationPositionZoom=0;
-        },
-        setBase64: function(value){
-            var slaveObj = this
-            slaveObj.setBase64=value
+            }
+            canvas.toBlob(function(blob){
+                var new_name = imageCutObj.originalImage.imageName
+                var pos = new_name.lastIndexOf(".");
+                new_name = new_name.substr(0, pos < 0 ? new_name.length : pos) + ".png";
+                imageCutObj.cuttedImage.imageName = new_name
+                imageCutObj.cuttedImage.imageType = "image/png"
+                var file = new File([blob], new_name)
+                imageCutObj.cuttedImage.imageBytes=file
+                PG._callAfterCut(imageCutObj)
+            })
         }
-    }
-    obj.activeViewImage=false
-    MainObj.cutterControlView.removeClass("actived")
-    MainObj.cutterShadow.removeClass("actived")
-    MainObj.cutterZoomControl[0][0].style.left=89+"px"
-    MainObj.cutterControlView.on('click', function(){
-        obj.viewImage();
+        PG.panelCutterContainer.removeClass("actived")
+        PG.setTitleButton(PG.config.titleButton)
+        PG.panelCutterContainer.addClass("close")
+        PG.targetViewContainer.addClass("actived")
+        PG.imagecutedControlErase.on('click', function(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            PG.targetViewContainer.removeClass("actived")                
+            PG.uploadArea.addClass("actived")
+        });
+        PG.imagecutedControlChange.on('click', function(){
+            PG.uploadArea.trigger('click');
+        });
+    };
+    selfObj.movecutterZoom =function(x, zoominicial, width, height){
+        selfObj.deslocationPositionZoom=x*(-1)
+        selfObj.calcZoomPosition(zoominicial, width, height)
+    };
+    selfObj.changeSizeImage =function(ratio, width, height){
+        width = parseFloat(width)*ratio
+        height = parseFloat(height)*ratio
+        img1.style.width=width+"px"
+        img1.style.height=height+"px"
+        img2.style.width=width+"px"
+        img2.style.height=height+"px"
+        selfObj.widthImg=width
+        selfObj.heightImg=height
+        selfObj.widthImgAfterZoom=width
+        selfObj.heightImgAfterZoom=height
+        selfObj.calcPosition();
+    };
+    selfObj.calcZoomPosition =function(zoominicial, width, height){
+        var position = selfObj.positionDefaultZoom-selfObj.deslocationPositionZoom
+        var ratio=position/zoominicial
+        selfObj.changeSizeImage(ratio, width, height)
+        PG.cutterZoomControl[0][0].style.left=position+"px"
+    };
+    selfObj.calcPosition =function(){
+        var widthImg=selfObj.widthImg;
+        var heightImg=selfObj.heightImg;
+        var widthScreen=window.innerWidth;
+        var heightScreen=window.innerHeight
+        var widthCutter=selfObj.widthCutter;
+        var heightCutter=selfObj.heightCutter;
+        if((widthImg>0)&&(heightImg>0)&&(widthScreen>0)&&(heightScreen>0)){
+            var fCalc = selfObj.calcMidPosition;
+            var iPXB = selfObj.inicialPositionXBackground+selfObj.deslocationPositionXBackground;
+            var iPYB = selfObj.inicialPositionYBackground+selfObj.deslocationPositionYBackground;
+            var iPXITC = selfObj.inicialPositionXImgToCut+selfObj.deslocationPositionXImgToCut;
+            var iPYITC = selfObj.inicialPositionYImgToCut+selfObj.deslocationPositionYImgToCut;
+            var relativePositionXBackground=fCalc(widthScreen, widthImg, iPXB);
+            var relativePositionYBackground=fCalc(heightScreen, heightImg, iPYB);
+            var relativePositionXImgToCut=fCalc(widthCutter, widthImg, iPXITC);
+            var relativePositionYImgToCut=fCalc(heightCutter, heightImg, iPYITC);
+            PG.panelCutterSizeContainer[0][0].style.left=fCalc(widthScreen, widthCutter, 0)+"px";
+            PG.panelCutterSizeContainer[0][0].style.top=fCalc(heightScreen, heightCutter, 0)+"px";
+            PG.cutterBackground[0][0].style.left=relativePositionXBackground+"px";
+            PG.cutterBackground[0][0].style.top=relativePositionYBackground+"px";
+            PG.panelCutterImage[0][0].style.left=relativePositionXImgToCut+"px";
+            PG.panelCutterImage[0][0].style.top=relativePositionYImgToCut+"px";
+            selfObj.positionXAfterZoom=relativePositionXImgToCut;
+            selfObj.positionYAfterZoom=relativePositionYImgToCut;
+        };
+    };
+    selfObj.saveinicialPosition =function(){
+        selfObj.inicialPositionXBackground+=selfObj.deslocationPositionXBackground
+        selfObj.inicialPositionYBackground+=selfObj.deslocationPositionYBackground
+        selfObj.inicialPositionXImgToCut+=selfObj.deslocationPositionXImgToCut
+        selfObj.inicialPositionYImgToCut+=selfObj.deslocationPositionYImgToCut
+        selfObj.deslocationPositionXBackground=0
+        selfObj.deslocationPositionYBackground=0
+        selfObj.deslocationPositionXImgToCut=0
+        selfObj.deslocationPositionYImgToCut=0
+    };
+    selfObj.savePositionZoom = function(){
+        selfObj.positionDefaultZoom-=selfObj.deslocationPositionZoom
+        selfObj.deslocationPositionZoom=0;
+    };
+    selfObj.setBase64 = function(value){
+        selfObj.setBase64=value
+    };
+    selfObj.activeViewImage = false
+    PG.cutterControlView.removeClass("actived")
+    PG.cutterShadow.removeClass("actived")
+    PG.cutterZoomControl[0][0].style.left=89+"px"
+    PG.cutterControlView.on('click', function(){
+        selfObj.viewImage();
     });
-    MainObj.cutterControlClose.on('click', function(){
-        obj.closeImage();
+    PG.cutterControlClose.on('click', function(){
+        selfObj.closeImage();
     });
-    MainObj.cutterControlCut.on('click', function(){
-        console.log('clicado')
-        obj.cutImage();
+    PG.cutterControlCut.on('click', function(){
+        selfObj.cutImage();
     });
-    img1.onloadend = function(){
+    img1.onload = function(){
         imgWidth = this.width
         imgHeight = this.height
-        console.log(MainObj.error)
-        obj.widthImg = imgWidth
-        obj.heightImg = imgHeight
-        obj.widthImgAfterZoom = imgWidth
-        obj.heightImgAfterZoom = imgHeight
+        selfObj.widthImg = imgWidth
+        selfObj.heightImg = imgHeight
+        selfObj.originalWidthImg = imgWidth
+        selfObj.originalHeightImg = imgHeight
+        selfObj.widthImgAfterZoom = imgWidth
+        selfObj.heightImgAfterZoom = imgHeight
 
-        obj.widthCutter = parseFloat(MainObj.cutterSizeX)
-        obj.heightCutter = parseFloat(MainObj.cutterSizeY)
-        if (MainObj.error){
-            MainObj.showMessage(MainObj.messages.invalidImage)
-            MainObj.setTitleButton(MainObj.config.titleButton)
-            MainObj.error=false
+        selfObj.widthCutter = parseFloat(PG.cutterSizeX)
+        selfObj.heightCutter = parseFloat(PG.cutterSizeY)
+        if (PG.error){
+            PG.showMessage(PG.messages.invalidImage)
+            PG.setTitleButton(PG.config.titleButton)
+            PG.error=false
         } else {
-            obj.calcPosition()
-            MainObj.panelCutterContainer.removeClass("close")
-            MainObj.panelCutterContainer.addClass("actived")
+            selfObj.calcPosition()
+            PG.panelCutterContainer.removeClass("close")
+            PG.panelCutterContainer.addClass("actived")
 
         }
     }
+    img1.src=base64data
+    img2.src=base64data
     window.addEventListener("resize", function(){
-        obj.calcPosition()
+        selfObj.calcPosition()
     });
-    MainObj.cutterPad.on('mousedown', function(event){
+    PG.cutterPad.on('mousedown', function(event){
         var xInicial = event.clientX;
         var yInicial = event.clientY;
-        MainObj.cutterPad.on('mousemove', function(event){
+        PG.cutterPad.on('mousemove', function(event){
             var xDeslocamento = event.clientX-xInicial;
             var yDeslocamento = event.clientY-yInicial;
-            obj.moveImage(xDeslocamento, yDeslocamento)
+            selfObj.moveImage(xDeslocamento, yDeslocamento)
         });
-        MainObj.cutterPad.on('mouseup', function(event){
-            obj.saveinicialPosition()
-            MainObj.cutterPad.on('mousemove', '');
-            MainObj.cutterPad.on('mouseleave', '');
+        PG.cutterPad.on('mouseup', function(event){
+            selfObj.saveinicialPosition()
+            PG.cutterPad.on('mousemove', '');
+            PG.cutterPad.on('mouseleave', '');
         });
-        MainObj.cutterPad.on('mouseleave', function(event){
-            obj.saveinicialPosition()
-            MainObj.cutterPad.on('mousemove', '');
-            MainObj.cutterPad.on('mouseleave', '');
+        PG.cutterPad.on('mouseleave', function(event){
+            selfObj.saveinicialPosition()
+            PG.cutterPad.on('mousemove', '');
+            PG.cutterPad.on('mouseleave', '');
         });
     });
-    MainObj.cutterZoomControl.on('mousedown', function(event){
+    PG.cutterZoomControl.on('mousedown', function(event){
         var xInicial = event.clientX;
-        var inicialPosition = obj.positionDefaultZoom;
-        var width = obj.widthImg
-        var height = obj.heightImg
-        MainObj.cutterZoomControl.on('mousemove', function(event){
+        var inicialPosition = selfObj.positionDefaultZoom;
+        var width = selfObj.widthImg
+        var height = selfObj.heightImg
+        PG.cutterZoomControl.on('mousemove', function(event){
             var xDeslocamento = event.clientX-xInicial;
             if (((inicialPosition+xDeslocamento)>0)&&(inicialPosition+xDeslocamento)<179){
-                obj.movecutterZoom(xDeslocamento, inicialPosition, width, height)
+                selfObj.movecutterZoom(xDeslocamento, inicialPosition, width, height)
             }
         });
-        MainObj.cutterZoomControl.on('mouseup', function(event){
-            obj.savePositionZoom()
-            MainObj.cutterZoomControl.on('mousemove', '');
-            MainObj.cutterZoomControl.on('mouseleave', '');
+        PG.cutterZoomControl.on('mouseup', function(event){
+            selfObj.savePositionZoom()
+            PG.cutterZoomControl.on('mousemove', '');
+            PG.cutterZoomControl.on('mouseleave', '');
         });
-        MainObj.cutterZoomControl.on('mouseleave', function(event){
-            obj.savePositionZoom()
-            MainObj.cutterZoomControl.on('mousemove', '');
-            MainObj.cutterZoomControl.on('mouseleave', '');
+        PG.cutterZoomControl.on('mouseleave', function(event){
+            selfObj.savePositionZoom()
+            PG.cutterZoomControl.on('mousemove', '');
+            PG.cutterZoomControl.on('mouseleave', '');
         });
     });
-    return obj
+    return selfObj
 }
 var phanterGallery = new (function(){
     this.phanterGalleryObjs=[]
@@ -388,6 +401,11 @@ var phanterGallery = new (function(){
             nameOfFileLong:"The filename is too long! Please demote before upload",
             fileCouldNotBeUploaded:"File could not be uploaded: %(name_file)s",
         };
+    this._callAfterCut = ""
+    this.setCallAfterCut = function(script){
+        this._callAfterCut = script
+        this._update();
+    };
     this.config = function(obj){
         for (x in obj) {
                 this._config[x]=obj[x]
@@ -402,11 +420,30 @@ var phanterGallery = new (function(){
         this._update();
         return this._messages   
     };
-    this._update = function(init=false){
-        if (init){
+    this._update = function(init){
+        if (init===false){
             var elements = phanterQuery(".phantergallery_object")[0];
                 for (var i = 0; i < elements.length; i++) {
                     var PG = new phanterGalleryObj(elements[i], this._config, this._messages)
+                    if(PG.uploadSrcImg!=""){
+                        var img = new Image;
+                        img.src = PG.uploadSrcImg
+                        img.onload = function(){
+                            var canvas = PG.targetView[0][0]
+                            canvas.width = PG.cutterSizeX
+                            canvas.height = PG.cutterSizeY
+                            var ctx = canvas.getContext("2d")
+                            ctx.drawImage(img, 0, 0)
+                            PG.imagecutedControlErase.on('click', function(){
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                PG.targetViewContainer.removeClass("actived")                
+                                PG.uploadArea.addClass("actived")
+                            });
+                            PG.imagecutedControlChange.on('click', function(){
+                                PG.uploadArea.trigger('click');
+                            });
+                        }
+                    } 
                     var objArray = this.phanterGalleryObjs
                     objArray.push(PG);
                 }
@@ -414,6 +451,7 @@ var phanterGallery = new (function(){
             var elements = phanterQuery(".phantergallery_object")[0];
                 for (var i = 0; i < elements.length; i++) {
                     var PG = new phanterGalleryObj(elements[i], this._config, this._messages)
+                    PG._callAfterCut = this._callAfterCut
                     PG.setImgButton(this._config.imgButton)
                     PG.setTitleButton(this._config.titleButton)
                     phanterSvgs.update()
@@ -426,4 +464,25 @@ var phanterGallery = new (function(){
     return this
 })();
 
-
+var phanterGalleryAjaxObj = function(url, objectToSend, callback){         
+    var xhttp;
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            callback(this);
+        } else{
+            throw "error in ajax send"
+        }
+    };
+    var imageBlob = ""
+    var fd = new FormData();
+    for (x in objectToSend){
+        if (objectToSend[x] instanceof Blob){
+            imageBlob=objectToSend[x]
+        } else {
+            fd.append(x, objectToSend[x]);
+        }
+    }
+    xhttp.open("POST", url, true);
+    xhttp.send(fd,  imageBlob);
+}

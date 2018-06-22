@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Autor: PhanerJR
 from __future__ import print_function
-from modules.phantertagconstroi import MyTag
+from .phantertagconstroi import MyTag
 import io
 import os
 from PIL import Image as PILImage
@@ -34,11 +34,20 @@ class INPUT(MyTag):
         self.attributes = attributes
 
 
+class CANVAS(MyTag):
+
+    def __init__(self, *content, **attributes):
+        MyTag.__init__(self, 'canvas')
+        self.singleton = False
+        self.content = content
+        self.attributes = attributes
+
+
 class PhanterGalleryInput(object):
 
-    def __init__(self, url, cut_size=(300, 300), global_id=""):
+    def __init__(self, src_img="", cut_size=(300, 300), global_id=None, zindex=None):
         """
-        @url: upload destination url
+        @src_img: source_img
 
         @cut_size: Cut image size
 
@@ -49,8 +58,20 @@ class PhanterGalleryInput(object):
         self.cut_size = cut_size
         self.title_button = "Upload Image"
         self._image_button = I(_class="phantersvg upload-cloud")
-        self._global_id = ""
-        self._url = url
+        self.global_id = global_id
+        self._src_img = src_img
+        self.zindex = zindex
+
+    @property
+    def zindex(self):
+        return self._zindex
+
+    @zindex.setter
+    def zindex(self, value):
+        if isinstance(value, (int, type(None))):
+            self._zindex=value
+        else:
+            raise TypeError("The zindex value must be integer")
 
     @property
     def global_id(self):
@@ -58,14 +79,17 @@ class PhanterGalleryInput(object):
 
     @global_id.setter
     def global_id(self, _id):
-        if isinstance(_id, (str, int)):
+        if isinstance(_id, (str, int, type(None))):
             if isinstance(_id, str):
                 _id = _id.strip()
                 if " " in _id:
                     raise ValueError("The id can't have empty space")
-            self._global_id = _id
+            elif _id==None:
+                self._global_id=""
+            else:
+                self._global_id = _id
         else:
-            raise TypeError("The global_id must be string or int")
+            raise TypeError("The global_id must be string or integer or None")
 
     @property
     def title_button(self):
@@ -107,6 +131,10 @@ class PhanterGalleryInput(object):
         return self._xml
 
     def _html_input(self, _id=""):
+        zindex = self._zindex
+        style_zindex = None
+        if zindex:
+            style_zindex = "z-index:%s;" % zindex
         title_button = self._title_button
         image_button = self._image_button
         cut_size = self.cut_size
@@ -137,6 +165,8 @@ class PhanterGalleryInput(object):
                 'phantergallery_cutter-zoom-control',
             '_data-target-view':
                 'phantergallery_target-view',
+            '_data-target-view-container':
+                'phantergallery_target-view-container',
             '_data-upload-messages':
                 'phantergallery_upload-messages',
             '_data-upload-area-progress':
@@ -145,14 +175,45 @@ class PhanterGalleryInput(object):
                 'phantergallery_upload-image-button',
             '_data-upload-title-button':
                 'phantergallery_upload-title-button',
+            '_data-imagecuted-control-erase':
+                'phantergallery-imagecuted-control-erase',
+            '_data-imagecuted-control-change':
+                'phantergallery-imagecuted-control-change',
         }
         if _id:
             for x in ids_elements:
                 ids_elements[x] = "-".join([ids_elements[x], _id])
         ids_elements['_data-cutter-size-x'] = str(cut_size[0])
         ids_elements['_data-cutter-size-y'] = str(cut_size[1])
-        ids_elements['_data-upload-url'] = self._url
+        ids_elements['_data-upload-src-img'] = self._src_img
         html = DIV(
+            DIV(
+                DIV(
+                    DIV(
+                        DIV(
+                            I(_class="phantersvg recycle"),
+                            _id=ids_elements["_data-imagecuted-control-erase"],
+                            _class="phantergallery" +
+                                   "_imagecuted-control"
+                        ),
+                        DIV(
+                            I(_class="phantersvg reload-image"),
+                            _id=ids_elements["_data-imagecuted" +
+                                             "-control-change"],
+                            _class="phantergallery" +
+                                   "_imagecuted-control"
+                        ),
+                        _class="phantergallery" +
+                               "_imagecuted-controls"),
+                    CANVAS(_id=ids_elements['_data-target-view']),
+                    _class='phantergallery-center-content',
+                ),
+                _id=ids_elements['_data-target-view-container'],
+                _style="overflow: hidden; width: %spx; height: %spx;" %
+                       (cut_size[0], cut_size[1]),
+                _class="phantergallery_target-view-container%s" %
+                       (" actived" if self._src_img else ""),
+            ),
             DIV(
                 DIV(
                     DIV(
@@ -167,7 +228,8 @@ class PhanterGalleryInput(object):
                     _class="phantergallery_container-upload-button"
                 ),
                 _id=ids_elements['_data-object'],
-                _class="phantergallery_object",
+                _class="phantergallery_object%s" %
+                       (" actived" if not self._src_img else ""),
                 **ids_elements
             ),
             DIV(
@@ -229,11 +291,8 @@ class PhanterGalleryInput(object):
                         _class='phantergallery_cutter-zoom-controls'),
                     _class='phantergallery_cutter-zoom-container'),
                 _id=ids_elements['_data-panel-cutter-container'],
-                _class="phantergallery_panel-cutter-container"
-            ),
-            DIV(
-                DIV(_id=ids_elements['_data-target-view']),
-                _class='phantergallery_target-view-container'
+                _class="phantergallery_panel-cutter-container",
+                _style=style_zindex
             ),
             DIV(_id=ids_elements['_data-upload-messages'],
                 _class="phantergallery_upload-messages"),
@@ -278,6 +337,7 @@ class PhanterGalleryInput(object):
 
 
 class PhanterGalleryCutter(object):
+
     def __init__(self,
                  imageName,
                  imageType,
@@ -295,7 +355,7 @@ class PhanterGalleryCutter(object):
         self.newSizeX = newSizeX
         self.newSizeY = newSizeY
 
-    def echoPhanterImages(self):
+    def getImage(self):
         imageBytes = self.imageBytes
         nome_da_imagem = self.imageName
         im = PILImage.open(imageBytes)
@@ -313,10 +373,25 @@ class PhanterGalleryCutter(object):
                       positionY + cutterSizeY))
         jpeg_image_buffer = io.BytesIO()
         if extensao.lower() == '.png':
-            # im.save(jpeg_image_buffer, 'png')
             im.save(jpeg_image_buffer, 'png')
         else:
-            # im.save(jpeg_image_buffer, format='JPEG', quality=100)
+            im.save(jpeg_image_buffer, format='JPEG', quality=100)
+        jpeg_image_buffer.seek(0)
+        data = jpeg_image_buffer.read()
+        return data
+
+
+class PhanterGalleryImageCutObj(object):
+
+    def __init__(self, imageBytes):
+        self.imageBytes = imageBytes
+
+    def getImage(self, formatOut='png'):
+        im = PILImage.open(self.imageBytes)
+        jpeg_image_buffer = io.BytesIO()
+        if formatOut == 'png':
+            im.save(jpeg_image_buffer, 'png')
+        else:
             im.save(jpeg_image_buffer, format='JPEG', quality=100)
         jpeg_image_buffer.seek(0)
         data = jpeg_image_buffer.read()

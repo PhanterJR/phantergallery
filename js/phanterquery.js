@@ -47,7 +47,6 @@ var phanterQuery = function(seletor){
 			};
 			seletor=transform
 		}
-		//console.log(seletor)
 		result = document.querySelectorAll(seletor)
 		if(result.length!=0){
 			elements = result		

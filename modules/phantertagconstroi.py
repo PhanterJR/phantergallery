@@ -197,13 +197,19 @@ class MyTag(object):
 
     @attributes.setter
     def attributes(self, attributes):
+        print('veio aqui')
         if isinstance(attributes, str):
             self._attributes = " ".join(["", attributes.strip()])
+        elif isinstance(attributes, type(None)):
+            pass
         elif isinstance(attributes, dict):
             temp_atributes = {}
             for x in attributes:
                 if x.startswith("_"):
-                    temp_atributes[x] = attributes[x]
+                    if attributes[x] == None:
+                        pass
+                    else:
+                        temp_atributes[x] = attributes[x]
                 else:
                     raise TypeError(
                         "Keys of attributes must starts with underline '_'")
